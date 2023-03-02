@@ -13,29 +13,28 @@ source "amazon-ebs" "ubuntu" {
   region        = "us-west-2"
   source_ami_filter {
     filters = {
-      name                = "ubuntu/images/*ubuntu-xenial-22.04-amd64-server-*"
-      root-device-type    = "ebs"
+      name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
       virtualization-type = "hvm"
     }
     most_recent = true
-    owners      = ["self"]
+    owners      = ["amazon"]
   }
   ssh_username = "nebius"
   tags = {
-      OS_Version = "Ubuntu"
-      Release = "Latest"
-      Base_AMI_Name = "{{ .SourceAMIName }}"
-      Extra = "{{ .SourceAMITags.TagName }}"
+    OS_Version    = "Ubuntu"
+    Release       = "Latest"
+    Base_AMI_Name = "{{ .SourceAMIName }}"
+    Extra         = "{{ .SourceAMITags.TagName }}"
   }
 }
 
 build {
-  name = "nebius-packer"
+  name    = "nebius-packer"
   sources = ["source.amazon-ebs.ubuntu"]
 
   provisioner "file" {
     destination = "/root/"
-    sources     = [
+    sources = [
       "./page1.html",
       "./page2.html"
     ]
