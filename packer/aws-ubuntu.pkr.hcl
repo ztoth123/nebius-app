@@ -1,31 +1,52 @@
 packer {
   required_plugins {
     amazon = {
-      version = ">= 0.0.2"
+      version = ">= 1.2.1"
       source  = "github.com/hashicorp/amazon"
     }
   }
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "learn-packer-linux-aws"
+  ami_name      = "nebius-packer-linux-img"
   instance_type = "t2.micro"
   region        = "us-west-2"
   source_ami_filter {
     filters = {
-      name                = "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*"
+      name                = "ubuntu/images/*ubuntu-xenial-22.04-amd64-server-*"
       root-device-type    = "ebs"
       virtualization-type = "hvm"
     }
     most_recent = true
-    owners      = ["099720109477"]
+    owners      = ["self"]
   }
-  ssh_username = "ubuntu"
+  ssh_username = "nebius"
+  tags = {
+      OS_Version = "Ubuntu"
+      Release = "Latest"
+      Base_AMI_Name = "{{ .SourceAMIName }}"
+      Extra = "{{ .SourceAMITags.TagName }}"
+  }
 }
 
 build {
-  name = "learn-packer"
-  sources = [
-    "source.amazon-ebs.ubuntu"
-  ]
+  name = "nebius-packer"
+  sources = ["source.amazon-ebs.ubuntu"]
+
+  provisioner "file" {
+    destination = "/root/"
+    sources     = [
+      "./page1.html",
+      "./page2.html"
+    ]
+  }
+
+  provisioner "shell" {
+    inline = [
+      "echo Installing NGINX",
+      "sleep 5",
+      "sudo apt-get update",
+      "sudo apt-get install -y nginx"
+    ]
+  }
 }
