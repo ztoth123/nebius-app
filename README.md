@@ -16,7 +16,7 @@ aws-ubuntu.pkr.hcl
 packer validate .
 The configuration is valid.
 ```
-## Build a customozed AMI image with packer
+## Build a customized AMI image with packer
 ```bash
 packer build .
 ```
