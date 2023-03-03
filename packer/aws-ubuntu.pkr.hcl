@@ -25,7 +25,7 @@ source "amazon-ebs" "ubuntu" {
     OS_Version    = "Ubuntu"
     Release       = "Latest"
     Base_AMI_Name = "{{ .SourceAMIName }}"
-    Extra         = "{{ .SourceAMITags.TagName }}"
+    Company       = "Nebius"
   }
 }
 
@@ -34,7 +34,7 @@ build {
   sources = ["source.amazon-ebs.ubuntu"]
 
   provisioner "file" {
-    destination = "/root/"
+    destination = "/home/ubuntu/"
     sources = [
       "./page1.html",
       "./page2.html"
@@ -44,9 +44,9 @@ build {
   provisioner "shell" {
     inline = [
       "echo Installing NGINX",
-      "sleep 5",
-      "sudo apt-get update",
-      "sudo apt-get install -y nginx"
+      "pwd",
+      "sudo apt update -y",
+      "sudo apt install nginx -y"
     ]
   }
 }
