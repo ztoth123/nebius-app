@@ -19,8 +19,8 @@ source "amazon-ebs" "ubuntu" {
     most_recent = true
     owners      = ["amazon"]
   }
-  ssh_username    = "ubuntu"
-  ssh_pty         = true
+  ssh_username = "ubuntu"
+  ssh_pty      = true
   tags = {
     OS_Version    = "Ubuntu"
     Release       = "Latest"
@@ -34,7 +34,7 @@ build {
   sources = ["source.amazon-ebs.ubuntu"]
 
   provisioner "file" {
-    destination = "/Users/ubuntu/"
+    destination = "/root/"
     sources = [
       "./page1.html",
       "./page2.html"
