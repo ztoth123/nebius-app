@@ -10,7 +10,7 @@ packer {
 source "amazon-ebs" "ubuntu" {
   ami_name      = "nebius-packer-linux-img"
   instance_type = "t2.micro"
-  region        = "us-west-2"
+  region        = "eu-west-1"
   source_ami_filter {
     filters = {
       name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
@@ -19,7 +19,8 @@ source "amazon-ebs" "ubuntu" {
     most_recent = true
     owners      = ["amazon"]
   }
-  ssh_username = "nebius"
+  ssh_username    = "ubuntu"
+  ssh_pty         = true
   tags = {
     OS_Version    = "Ubuntu"
     Release       = "Latest"
@@ -33,7 +34,7 @@ build {
   sources = ["source.amazon-ebs.ubuntu"]
 
   provisioner "file" {
-    destination = "/root/"
+    destination = "/Users/ubuntu/"
     sources = [
       "./page1.html",
       "./page2.html"
