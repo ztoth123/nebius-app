@@ -15,5 +15,6 @@ module "vpc-subnets" {
 
 # Create 2 Autoscaling Groups
 module "autoscaling-groups" {
-  source = "./modules/autoscaling-groups"
+  source                   = "./modules/autoscaling-groups"
+  vpc_id                   = aws_vpc.main.id
 }
