@@ -25,7 +25,7 @@ source "amazon-ebs" "ubuntu" {
     OS_Version    = "Ubuntu"
     Release       = "Latest"
     Base_AMI_Name = "{{ .SourceAMIName }}"
-    Company       = "Nebius"
+    Owner         = "ZToth"
   }
 }
 

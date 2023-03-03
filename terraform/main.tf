@@ -12,3 +12,8 @@ module "vpc-subnets" {
   availability_zone_subnet = each.value["availability_zone"]
   subnet_tag               = each.key
 }
+
+# Create 2 Autoscaling Groups
+module "autoscaling-groups" {
+  source = "./modules/autoscaling-groups"
+}

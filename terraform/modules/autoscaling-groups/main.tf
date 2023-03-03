@@ -1,4 +1,4 @@
-/* data "aws_ami" "ubuntu" {
+data "aws_ami" "ubuntu" {
   most_recent = true
 
   filter {
@@ -9,32 +9,36 @@
   owners = ["self"]
 }
 
-output "vpc_all_tags" {
-  value = aws_vpc.example.tags_all
-
-variable "pagehtml" {
-  description = "page1.html or page2.html filename"
-  default = ""
-}
-
-resource "aws_instance" "web" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"
-  user_data = <<EOF
+locals {
+  userdata = <<EOF
 #!/bin/bash
 echo "Copying the ${var.pagehtml} file to /var/www/html/index.html"
 cp ${var.pagehtml} /var/www/html/index.html
 EOF
-  tags = {
-    Name = "nebius-vm"
+}
+
+resource "aws_launch_template" "ubuntu-linux" {
+  name          = "ubuntu-linux-lt"
+  image_id      = data.aws_ami.ubuntu.id
+  instance_type = "t2.micro"
+  user_data     = base64encode(local.userdata)
+}
+
+resource "aws_autoscaling_group" "twozones_ag" {
+  availability_zones = ["eu-west-1a", "eu-west-1b"]
+  desired_capacity   = 0
+  max_size           = 2
+  min_size           = 0
+
+  launch_template {
+    id      = aws_launch_template.ubuntu-linux.id
+    version = aws_launch_template.ubuntu-linux.latest_version
+  }
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
   }
 }
-
-output "instances" {
-  value       = "${aws_instance.web.*.private_ip}"
-  description = "PrivateIP address details"
-}
-
-output "vpc_all_tags" {
-  value = aws_vpc.example.tags_all
-} */
