@@ -12,11 +12,11 @@ data "aws_ami" "ubuntu" {
 locals {
   userdata_1 = <<EOF
 #!/bin/bash
-cp /home/ubuntu/${var.page1_html} /var/www/html/index.html
+sudo cp /home/ubuntu/${var.page1_html} /var/www/html/index.html
 EOF
   userdata_2 = <<EOF
 #!/bin/bash
-cp /home/ubuntu/${var.page2_html} /var/www/html/index.html
+sudo cp /home/ubuntu/${var.page2_html} /var/www/html/index.html
 EOF
 
 }
@@ -91,7 +91,7 @@ resource "aws_lb_target_group" "alb_tg_1" {
   name        = "tf-alb-tg-1"
   target_type = "instance"
   port        = 80
-  protocol    = "TCP"
+  protocol    = "HTTP"
   vpc_id     = var.vpc_id
 }
 
@@ -99,7 +99,7 @@ resource "aws_lb_target_group" "alb_tg_2" {
   name        = "tf-alb-tg-2"
   target_type = "instance"
   port        = 80
-  protocol    = "TCP"
+  protocol    = "HTTP"
   vpc_id     = var.vpc_id
 }
 
@@ -111,4 +111,48 @@ resource "aws_autoscaling_attachment" "asg_attachment_tg_1" {
 resource "aws_autoscaling_attachment" "asg_attachment_tg_2" {
   autoscaling_group_name = aws_autoscaling_group.twozones_ag_2.id
   lb_target_group_arn    = aws_lb_target_group.alb_tg_2.arn
+}
+
+resource "aws_lb" "front_end_external" {
+  name               = "aws-lb-tf"
+  internal           = false
+  load_balancer_type = "application"
+}
+
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = aws_lb.front_end_external.arn
+  port              = "80"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.alb_tg_1.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "static_rule_1" {
+  listener_arn = aws_lb_listener.front_end.arn
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.alb_tg_1.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/page1.html"]
+    }
+  }
+}
+resource "aws_lb_listener_rule" "static_rule_2" {
+  listener_arn = aws_lb_listener.front_end.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.alb_tg_2.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/page2.html"]
+    }
+  }
 }
