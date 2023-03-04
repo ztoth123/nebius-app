@@ -39,9 +39,9 @@ resource "aws_launch_template" "ubuntu-linux_2" {
 
 resource "aws_autoscaling_group" "twozones_ag_1" {
   vpc_zone_identifier = [var.subnet1_id, var.subnet2_id]
-  desired_capacity   = 1
-  max_size           = 2
-  min_size           = 1
+  desired_capacity   = var.page1_desired_capacity
+  max_size           = var.page1_max_size
+  min_size           = var.page1_min_size
   launch_template {
     id      = aws_launch_template.ubuntu-linux_1.id
     version = aws_launch_template.ubuntu-linux_1.latest_version
@@ -65,9 +65,9 @@ resource "aws_autoscaling_group" "twozones_ag_1" {
 
 resource "aws_autoscaling_group" "twozones_ag_2" {
   vpc_zone_identifier = [var.subnet1_id, var.subnet2_id]
-  desired_capacity   = 1
-  max_size           = 2
-  min_size           = 1
+  desired_capacity   = var.page2_desired_capacity
+  max_size           = var.page2_max_size
+  min_size           = var.page2_min_size
   launch_template {
     id      = aws_launch_template.ubuntu-linux_2.id
     version = aws_launch_template.ubuntu-linux_2.latest_version

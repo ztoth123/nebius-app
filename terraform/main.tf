@@ -12,12 +12,18 @@ module "network" {
 
 # Create 2 Autoscaling Groups, 2 Target Groups, 1 Application Load Balancer
 module "autoscaling-lb" {
-  source     = "./modules/autoscaling-lb"
-  vpc_id     = module.network.vpc_id
-  subnet1_id = module.network.subnet1_id
-  subnet2_id = module.network.subnet2_id
-  sg-alb_id  = module.network.security-group-alb_id
-  sg-vm_id   = module.network.security-group-vm_id
-  page1_html = var.page1_html
-  page2_html = var.page2_html
+  source                 = "./modules/autoscaling-lb"
+  vpc_id                 = module.network.vpc_id
+  subnet1_id             = module.network.subnet1_id
+  subnet2_id             = module.network.subnet2_id
+  sg-alb_id              = module.network.security-group-alb_id
+  sg-vm_id               = module.network.security-group-vm_id
+  page1_html             = var.page1_html
+  page2_html             = var.page2_html
+  page1_desired_capacity = var.page1_desired_capacity
+  page1_max_size         = var.page1_max_size
+  page1_min_size         = var.page1_min_size
+  page2_desired_capacity = var.page2_desired_capacity
+  page2_max_size         = var.page2_max_size
+  page2_min_size         = var.page2_min_size
 }
