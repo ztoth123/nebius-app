@@ -42,6 +42,12 @@ resource "aws_autoscaling_group" "twozones_ag" {
   lifecycle {
     ignore_changes = [load_balancers, target_group_arns]
   }
+  tag {
+    key                 = "Owner"
+    value               = "ZToth"
+    propagate_at_launch = true
+  }
+
 }
 
 resource "aws_lb_target_group" "alb_tg" {

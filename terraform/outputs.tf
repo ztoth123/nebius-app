@@ -17,8 +17,3 @@ output "ec2_user_data" {
   description = "user_data of the VMs"
   value       = module.autoscaling-groups.ec2_user_data
 }
-
-/* output "subnet_id" {
-  description = "AWS subnet ID"
-  value       = module.vpc-subnets.subnet_id
-} */
