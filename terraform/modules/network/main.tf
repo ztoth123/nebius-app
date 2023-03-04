@@ -23,3 +23,51 @@ resource "aws_subnet" "subnet2" {
 resource "aws_internet_gateway" "main-gw" {
   vpc_id = aws_vpc.main.id
 }
+
+
+
+resource "aws_security_group" "alb-sg" {
+  name        = "alb-sg"
+  description = "Allow HTTP inbound and outbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description      = "HTTP from Internet"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description      = "ANY to VPC"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = [aws_vpc.main.cidr_block]
+  }
+
+}
+
+resource "aws_security_group" "vm-sg" {
+  name        = "vm-sg"
+  description = "Allow HTTP inbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description      = "HTTP from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = [aws_vpc.main.cidr_block]
+  }
+
+  egress {
+    description      = "ANY to Internet"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+}

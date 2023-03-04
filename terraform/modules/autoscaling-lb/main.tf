@@ -12,11 +12,11 @@ data "aws_ami" "ubuntu" {
 locals {
   userdata_1 = <<EOF
 #!/bin/bash
-sudo cp /home/ubuntu/${var.page1_html} /var/www/html/index.html
+sudo cp /home/ubuntu/${var.page1_html} /var/www/html/page1.html
 EOF
   userdata_2 = <<EOF
 #!/bin/bash
-sudo cp /home/ubuntu/${var.page2_html} /var/www/html/index.html
+sudo cp /home/ubuntu/${var.page2_html} /var/www/html/page2.html
 EOF
 
 }
@@ -25,6 +25,7 @@ resource "aws_launch_template" "ubuntu-linux_1" {
   name          = "ubuntu-linux-lt_1"
   image_id      = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
+  vpc_security_group_ids = [var.sg-vm_id]
   user_data     = base64encode(local.userdata_1)
 }
 
@@ -32,12 +33,13 @@ resource "aws_launch_template" "ubuntu-linux_2" {
   name          = "ubuntu-linux-lt_2"
   image_id      = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
+  vpc_security_group_ids = [var.sg-vm_id]
   user_data     = base64encode(local.userdata_2)
 }
 
 resource "aws_autoscaling_group" "twozones_ag_1" {
   vpc_zone_identifier = [var.subnet1_id, var.subnet2_id]
-  desired_capacity   = 2
+  desired_capacity   = 1
   max_size           = 2
   min_size           = 1
   launch_template {
@@ -63,7 +65,7 @@ resource "aws_autoscaling_group" "twozones_ag_1" {
 
 resource "aws_autoscaling_group" "twozones_ag_2" {
   vpc_zone_identifier = [var.subnet1_id, var.subnet2_id]
-  desired_capacity   = 2
+  desired_capacity   = 1
   max_size           = 2
   min_size           = 1
   launch_template {
@@ -117,6 +119,9 @@ resource "aws_lb" "front_end_external" {
   name               = "aws-lb-tf"
   internal           = false
   load_balancer_type = "application"
+  security_groups    = [var.sg-alb_id]
+  subnets            = [var.subnet1_id, var.subnet2_id]
+
 }
 
 resource "aws_lb_listener" "front_end" {

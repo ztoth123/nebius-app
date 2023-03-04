@@ -22,3 +22,13 @@ variable "subnet2_id" {
   type = string
   default = ""
 }
+
+variable "sg-alb_id" {
+  type = string
+  default = ""
+}
+
+variable "sg-vm_id" {
+  type = string
+  default = ""
+}

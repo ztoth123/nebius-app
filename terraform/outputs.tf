@@ -18,6 +18,16 @@ output "subnet2_id" {
   value       = module.network.subnet2_id
 }
 
+output "security-group-alb_id" {
+  description = "ID of Security Group for ALB"
+  value       = module.network.security-group-alb_id
+}
+
+output "security-group-vm_id" {
+  description = "ID of Security Group for VMs"
+  value       = module.network.security-group-vm_id
+}
+
 output "aws_ami_image_id" {
   description = "AMI image ImageId"
   value       = module.autoscaling-lb.aws_ami_image_id

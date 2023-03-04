@@ -16,6 +16,8 @@ module "autoscaling-lb" {
   vpc_id     = module.network.vpc_id
   subnet1_id = module.network.subnet1_id
   subnet2_id = module.network.subnet2_id
+  sg-alb_id  = module.network.security-group-alb_id
+  sg-vm_id   = module.network.security-group-vm_id
   page1_html = var.page1_html
   page2_html = var.page2_html
 }
