@@ -1,20 +1,21 @@
-# Create 1 new VPC
-resource "aws_vpc" "main" {
-  cidr_block = var.cidr_block_vpc
+# Create 1 VPC and 2 subnets in 2 availability zones
+module "network" {
+  source                     = "./modules/network"
+  cidr_block_vpc             = var.cidr_block_vpc
+  cidr_block_subnet_1        = var.cidr_block_subnet_1
+  availability_zone_subnet_1 = var.availability_zone_subnet_1
+  subnet_tag_1               = format("%s-%s", var.availability_zone_subnet_1, "subnet")
+  cidr_block_subnet_2        = var.cidr_block_subnet_2
+  availability_zone_subnet_2 = var.availability_zone_subnet_2
+  subnet_tag_2               = format("%s-%s", var.availability_zone_subnet_2, "subnet")
 }
 
-# Create 2 subnets on 2 availability zones
-module "vpc-subnets" {
-  for_each                 = var.vpc_subnets
-  source                   = "./modules/network"
-  vpc_id                   = aws_vpc.main.id
-  cidr_block_subnet        = each.value["cidr_block_subnet"]
-  availability_zone_subnet = each.value["availability_zone"]
-  subnet_tag               = each.key
-}
-
-# Create 2 Autoscaling Groups
-module "autoscaling-groups" {
-  source                   = "./modules/autoscaling-groups"
-  vpc_id                   = aws_vpc.main.id
+# Create 2 Autoscaling Groups, 2 Target Groups, 1 Application Load Balancer
+module "autoscaling-lb" {
+  source     = "./modules/autoscaling-lb"
+  vpc_id     = module.network.vpc_id
+  subnet1_id = module.network.subnet1_id
+  subnet2_id = module.network.subnet2_id
+  page1_html = var.page1_html
+  page2_html = var.page2_html
 }
