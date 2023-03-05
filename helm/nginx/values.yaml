@@ -10,6 +10,11 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+vault:
+  enabled: true
+  image: hashicorp/vault:1.12.1
+  containerName: vault
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

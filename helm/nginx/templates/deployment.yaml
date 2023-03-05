@@ -51,6 +51,10 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.vault.enabled }}
+        - name: {{ .Values.vault.containerName }}
+          image: {{ .Values.vault.image }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
