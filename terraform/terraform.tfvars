@@ -10,10 +10,7 @@ availability_zone_subnet_2 = "eu-west-1b"
 page1_html = "page1.html"
 page2_html = "page2.html"
 
-page1_desired_capacity = 2
-page1_max_size         = 2
-page1_min_size         = 1
-
-page2_desired_capacity = 2
-page2_max_size         = 2
-page2_min_size         = 1
+## Autoscaling Group VM numbers
+ag_desired_capacity = 2
+ag_max_size         = 2
+ag_min_size         = 1
