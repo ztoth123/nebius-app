@@ -1,5 +1,6 @@
 # nebius-app
 
+![Inrastructure Overview](_diagram/nebius_diagram.png)
 # packer
 ## packer preparations
 * install packer

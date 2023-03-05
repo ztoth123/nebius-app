@@ -10,6 +10,9 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+configMap:
+  indexPageValue: ""
+
 vault:
   enabled: true
   image: hashicorp/vault:1.12.1
